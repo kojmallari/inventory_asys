@@ -114,14 +114,14 @@ if (!isset($_SESSION['username'])) {
                                     </a>
                                 </div>
                                 <div class="flex flex-col items-stretch items-center justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3 ml-auto">
-                                    <a href="">
-                                        <button type="button" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
+                                    <form id="export_csv" method="post" action="export_csv_idsupps.php">
+                                        <button type="submit" name="export_csv" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-2 -ml-1" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                                 <path d="M16 2v7h-2v-5h-12v16h12v-5h2v7h-16v-20h16zm2 9v-4l6 5-6 5v-4h-10v-2h10z"/>
                                             </svg>
                                             Export CSV
                                         </button>
-                                    </a>
+                                    </form>
                                 </div>
                                 <div class="flex flex-col items-stretch items-center justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3 ml-auto">
                                     <a href="idsupps_add.php">
@@ -147,10 +147,10 @@ if (!isset($_SESSION['username'])) {
                                     Quantity (Received)
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Quantity (In Used)
+                                    Quantity (In Use)
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Quantity (In Stock)
+                                    Quantity (Remaining Stock)
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Category
@@ -175,26 +175,24 @@ if (!isset($_SESSION['username'])) {
 
                                     if ($records > 0) {
                                         while ($records = $vQuery->fetch(PDO::FETCH_ASSOC)){
-                                            $remaining_stock = $records['QUANT_STOCK'] - $records['QUANT_USED'];
+                                            $remaining_stock = $records['QUANT_RECEIVE'] - $records['QUANT_USED'];
                             ?>
                                 <tr class="text-center font-bold odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                     <td><?php echo htmlspecialchars($records['ITEM_NUM']);?></td>
                                     <td><?php echo htmlspecialchars($records['PROD_NAME']);?></td>
-                                    <td><?php echo htmlspecialchars($records['QUANT_STOCK']);?></td>
+                                    <td><?php echo htmlspecialchars($records['QUANT_RECEIVE']);?></td>
                                     <td><?php echo htmlspecialchars($records['QUANT_USED']);?></td>
                                     <td><?php echo htmlspecialchars($remaining_stock);?></td>
                                     <td><?php echo htmlspecialchars($records['CATEGORY']);?></td>
                                     <td><?php echo htmlspecialchars($records['RECEIVER']);?></td>
                                     <td><?php echo htmlspecialchars($records['DATE_RECEIVE']);?></td>
                                     <td class="px-4 py-3 flex items-center justify-end">
-                                        <a href="#">
-                                            <button type="button" class="text-white bg-white-700 hover:bg-white-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-white-600 dark:hover:bg-white-700 focus:outline-none dark:focus:ring-white-800" onclick="openModal('edit-modal')">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 26 26">
-                                                    <path d="M18 13.45l2-2.023v4.573h-2v-2.55zm-11-5.45h1.743l1.978-2h-3.721v2zm1.361 3.216l11.103-11.216 4.536 4.534-11.102 11.218-5.898 1.248 1.361-5.784zm1.306 3.176l2.23-.472 9.281-9.378-1.707-1.707-9.293 9.388-.511 2.169zm3.333 7.608v-2h-6v2h6zm-8-2h-3v-2h-2v4h5v-2zm13-2v2h-3v2h5v-4h-2zm-18-2h2v-4h-2v4zm2-6v-2h3v-2h-5v4h2z"/>
-                                                </svg>
-                                            </button>
+                                        <a href="idsupps_edit.php?editID=<?php echo htmlentities($records['ITEM_NUM']);?>" class="text-white bg-white-700 hover:bg-white-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-white-600 dark:hover:bg-white-700 focus:outline-none dark:focus:ring-white-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 26 26">
+                                                <path d="M18 13.45l2-2.023v4.573h-2v-2.55zm-11-5.45h1.743l1.978-2h-3.721v2zm1.361 3.216l11.103-11.216 4.536 4.534-11.102 11.218-5.898 1.248 1.361-5.784zm1.306 3.176l2.23-.472 9.281-9.378-1.707-1.707-9.293 9.388-.511 2.169zm3.333 7.608v-2h-6v2h6zm-8-2h-3v-2h-2v4h5v-2zm13-2v2h-3v2h5v-4h-2zm-18-2h2v-4h-2v4zm2-6v-2h3v-2h-5v4h2z"/>
+                                            </svg>
                                         </a>
-                                        <a href="#">
+                                        <a href="idsupps_delete.php?deleteID=<?php echo htmlentities($records['ITEM_NUM']);?>">
                                             <button type="button" class="text-white bg-white-700 hover:bg-white-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-white-600 dark:hover:bg-white-700 focus:outline-none dark:focus:ring-white-800">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 26 26">
                                                     <path d="m4.015 5.494h-.253c-.413 0-.747-.335-.747-.747s.334-.747.747-.747h5.253v-1c0-.535.474-1 1-1h4c.526 0 1 .465 1 1v1h5.254c.412 0 .746.335.746.747s-.334.747-.746.747h-.254v15.435c0 .591-.448 1.071-1 1.071-2.873 0-11.127 0-14 0-.552 0-1-.48-1-1.071zm14.5 0h-13v15.006h13zm-4.25 2.506c-.414 0-.75.336-.75.75v8.5c0 .414.336.75.75.75s.75-.336.75-.75v-8.5c0-.414-.336-.75-.75-.75zm-4.5 0c-.414 0-.75.336-.75.75v8.5c0 .414.336.75.75.75s.75-.336.75-.75v-8.5c0-.414-.336-.75-.75-.75zm3.75-4v-.5h-3v.5z" fill-rule="nonzero"/>

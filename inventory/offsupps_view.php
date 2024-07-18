@@ -114,14 +114,14 @@ if (!isset($_SESSION['username'])) {
                                     </a>
                                 </div>
                                 <div class="flex flex-col items-stretch items-center justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3 ml-auto">
-                                    <a href="">
-                                        <button type="button" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
+                                    <form id="export_csv" method="post" action="export_csv_offsupps.php">
+                                        <button type="submit" name="export_csv" class="flex items-center justify-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-2 -ml-1" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                                 <path d="M16 2v7h-2v-5h-12v16h12v-5h2v7h-16v-20h16zm2 9v-4l6 5-6 5v-4h-10v-2h10z"/>
                                             </svg>
                                             Export CSV
                                         </button>
-                                    </a>
+                                    </form>
                                 </div>
                                 <div class="flex flex-col items-stretch items-center justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3 ml-auto">
                                     <a href="offsupps_add.php">
@@ -144,10 +144,13 @@ if (!isset($_SESSION['username'])) {
                                     Product Name
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Quantity (In Stock)
+                                    Quantity (Received)
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Quantity (Currently Used)
+                                    Quantity (In Use)
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Quantity (Remaining Stock)
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Category
@@ -172,13 +175,14 @@ if (!isset($_SESSION['username'])) {
 
                                     if ($records > 0) {
                                         while ($records = $vQuery->fetch(PDO::FETCH_ASSOC)){
-                                            $remaining_stock = $records['QUANT_STOCK'] - $records['QUANT_USED'];
+                                            $remaining_stock = $records['QUANT_RECEIVE'] - $records['QUANT_USED'];
                             ?>
                                 <tr class="text-center font-bold odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                     <td><?php echo htmlspecialchars($records['ITEM_NUM']);?></td>
                                     <td><?php echo htmlspecialchars($records['PROD_NAME']);?></td>
-                                    <td><?php echo htmlspecialchars($remaining_stock);?></td>
+                                    <td><?php echo htmlspecialchars($records['QUANT_RECEIVE']);?></td>
                                     <td><?php echo htmlspecialchars($records['QUANT_USED']);?></td>
+                                    <td><?php echo htmlspecialchars($remaining_stock)?></td>
                                     <td><?php echo htmlspecialchars($records['CATEGORY']);?></td>
                                     <td><?php echo htmlspecialchars($records['RECEIVER']);?></td>
                                     <td><?php echo htmlspecialchars($records['DATE_RECEIVE']);?></td>
